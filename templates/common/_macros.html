@@ -1,0 +1,4 @@
+<!-- 定义文件宏 -->
+{% macro static(filename) -%}
+    {{url_for("static",filename=filename)}}
+{%- endmacro %}
