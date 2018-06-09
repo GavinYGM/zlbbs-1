@@ -4,9 +4,11 @@ from .forms import LoginForm, ResetPwdForm
 from .models import CMSUser
 from .decorators import login_required
 import config
-from exts import db
+from exts import db, mail
+from flask_mail import Message  # 导入Message类
 from utils import restful
-
+import string
+import random
 # 蓝图 (全局的): 蓝图名字 - __name__ - url前缀
 bp = Blueprint("cms", __name__, url_prefix='/cms')
 
@@ -35,6 +37,58 @@ def logout():
 @login_required
 def profile():
     return render_template('cms/cms_profile.html')
+
+
+# 🌟 cms后台管理系统的修改邮箱获取验证码
+@bp.route('/email_captcha/')
+def email_captcha():
+    # /email_capicha/?email=xxx@qq.com - 通过查询字符串的形式将邮箱传递到后台
+    # 1. 查询字符串
+    email = request.args.get('email')
+    if not email:
+        return restful.params_errorr('请传递邮箱参数！')
+
+    # 2. 产生验证码
+    # 2.1 a-zA-Z的字符串
+    source = list(string.ascii_letters)
+
+    # 2.2 将一个列表的值更新到另一个列表中，利用list.extend()
+    # 方法1
+    # source.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+
+    # 方法2
+    # map(func,obj) 将obj(需要可迭代的对象)的数据传递到函数中，然后处理后再返回
+    # lambda函数：匿名函数
+    # lambda x:str(x) 定义一个匿名函数，变量为x,处理方式为将x传入到str()中，进行字符串转义
+    source.extend(map(lambda x: str(x), (range(0, 10))))
+
+    # 2.3 随机采样
+    # sample 采样器，从source中随机选择6个，返回值为列表
+    list_captcha = random.sample(source, 6)
+
+    # 将字符串转换成列表
+    captcha = "".join(list_captcha)
+
+    # 3.给这个邮箱发送邮件
+    message = Message(
+        '武汉柠檬班论坛邮箱验证码', recipients=[email], body='您的验证码是：%s' % captcha)
+    try:
+        mail.send(message)
+    except Exception as e:
+        return restful.server_error()
+    return restful.success()
+
+
+'''
+    测试邮箱发送邮件
+'''
+
+
+@bp.route('/email/')
+def send_email():
+    message = Message('邮件发送', recipients=['1668319858@qq.com'], body='测试')
+    mail.send(message)
+    return '邮件发送成功！'
 
 
 # @bp.route('/front/')
@@ -123,8 +177,21 @@ class ResetPwdView(views.MethodView):
             return restful.params_errorr(message=form.get_error())
 
 
+# 🌟 重设邮箱视图类
+class ResetEmailView(views.MethodView):
+    decorators = [login_required]
+
+    def get(self):
+        return render_template('cms/cms_resetemail.html')
+
+    def post(self):
+        pass
+
+
 # 将类视图`LoginView`注册到路由规则中,并且命名为login，在url_for反转时，填写login
 bp.add_url_rule('/login/', view_func=LoginView.as_view('login'))
 
 # 将类视图`ResetPwdView`注册到路由规则中,并且命名为login，在url_for反转时，填写resetpwd
 bp.add_url_rule('/resetpwd/', view_func=ResetPwdView.as_view('resetpwd'))
+
+bp.add_url_rule('/resetemail/', view_func=ResetEmailView.as_view('resetemail'))

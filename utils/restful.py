@@ -21,6 +21,7 @@ def restful_result(code, message, data):
 
 def success(message=None, data=None):
     '''
+    成功 200
     :param code: 状态码
     :param message: 返回错误信息
     :param data: 返回数据
@@ -30,6 +31,7 @@ def success(message=None, data=None):
 
 def unauth_error(message=''):
     '''
+    未授权 401
     :param code: 状态码
     :param message: 返回错误信息
     :param data: 返回数据
@@ -40,6 +42,7 @@ def unauth_error(message=''):
 
 def params_errorr(message=''):
     '''
+    参数错误 400
     :param code: 状态码
     :param message: 返回错误信息
     :param data: 返回数据
@@ -49,6 +52,7 @@ def params_errorr(message=''):
 
 def server_error(message=''):
     '''
+    服务器错误 500
     :param code: 状态码
     :param message: 返回错误信息
     :param data: 返回数据
