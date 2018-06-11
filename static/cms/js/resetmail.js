@@ -1,25 +1,30 @@
+/**
+ * Created by hynev on 2017/11/30.
+ */
+
 $(function () {
-    $("#submit").click(function (event) {
+    $("#captcha-btn").click(function (event) {
         event.preventDefault();
-
-        // 1. 获取新邮箱的元素
-        var newmailE = $("input[name=email]");
-
-        // 2. 获取新邮箱元素的值
-        var newmail = newmailE.val();
-
-        // 2.1 ajax请求提交表单
-        zlajax.post({
-            'url': '/cms/resetemail',
+        var email = $("input[name='email']").val();
+        if (!email) {
+            zlalert.alertInfoToast('请输入邮箱');
+            return;
+        }
+        zlajax.get({
+            'url': '/cms/email_captcha/',
             'data': {
-                'newmail': newmail
+                'email': email
             },
-            'success': function (data){
-                if(data['code'] == 200){
-                    
+            'success': function (data) {
+                if (data['code'] == 200) {
+                    zlalert.alertSuccessToast('邮件发送成功！请注意查收！');
+                } else {
+                    zlalert.alertInfo(data['message']);
                 }
+            },
+            'fail': function (error) {
+                zlalert.alertNetworkError();
             }
-        })
-
-    })
-})
+        });
+    });
+});

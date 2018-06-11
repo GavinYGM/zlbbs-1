@@ -41,42 +41,51 @@ def profile():
 
 # 🌟 cms后台管理系统的修改邮箱获取验证码
 @bp.route('/email_captcha/')
+@login_required
 def email_captcha():
-    # /email_capicha/?email=xxx@qq.com - 通过查询字符串的形式将邮箱传递到后台
-    # 1. 查询字符串
+    # 0. 邮箱验证:正则校验
+    # 通过验证：
     email = request.args.get('email')
-    if not email:
-        return restful.params_errorr('请传递邮箱参数！')
+    import re
+    if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}| \
+            [0-9]{1,3})(\\]?)$", email) is not None:
+        # /email_capicha/?email=xxx@qq.com - 通过查询字符串的形式将邮箱传递到后台
+        # 1. 查询字符串
+        email = request.args.get('email')
+        if not email:
+            return restful.params_errorr('请传递邮箱参数！')
 
-    # 2. 产生验证码
-    # 2.1 a-zA-Z的字符串
-    source = list(string.ascii_letters)
+        # 2. 产生验证码
+        # 2.1 a-zA-Z的字符串
+        source = list(string.ascii_letters)
 
-    # 2.2 将一个列表的值更新到另一个列表中，利用list.extend()
-    # 方法1
-    # source.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+        # 2.2 将一个列表的值更新到另一个列表中，利用list.extend()
+        # 方法1
+        # source.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
 
-    # 方法2
-    # map(func,obj) 将obj(需要可迭代的对象)的数据传递到函数中，然后处理后再返回
-    # lambda函数：匿名函数
-    # lambda x:str(x) 定义一个匿名函数，变量为x,处理方式为将x传入到str()中，进行字符串转义
-    source.extend(map(lambda x: str(x), (range(0, 10))))
+        # 方法2
+        # map(func,obj) 将obj(需要可迭代的对象)的数据传递到函数中，然后处理后再返回
+        # lambda函数：匿名函数
+        # lambda x:str(x) 定义一个匿名函数，变量为x,处理方式为将x传入到str()中，进行字符串转义
+        source.extend(map(lambda x: str(x), (range(0, 10))))
 
-    # 2.3 随机采样
-    # sample 采样器，从source中随机选择6个，返回值为列表
-    list_captcha = random.sample(source, 6)
+        # 2.3 随机采样
+        # sample 采样器，从source中随机选择6个，返回值为列表
+        list_captcha = random.sample(source, 6)
 
-    # 将字符串转换成列表
-    captcha = "".join(list_captcha)
+        # 将字符串转换成列表
+        captcha = "".join(list_captcha)
 
-    # 3.给这个邮箱发送邮件
-    message = Message(
-        '武汉柠檬班论坛邮箱验证码', recipients=[email], body='您的验证码是：%s' % captcha)
-    try:
-        mail.send(message)
-    except Exception as e:
-        return restful.server_error()
-    return restful.success()
+        # 3.给这个邮箱发送邮件
+        message = Message(
+            '武汉柠檬班论坛邮箱验证码', recipients=[email], body='您的验证码是：%s' % captcha)
+        try:
+            mail.send(message)
+        except Exception as e:
+            return restful.server_error()
+        return restful.success()
+    else:
+        return restful.params_errorr(message='请输入正确的邮箱格式！')
 
 
 '''
