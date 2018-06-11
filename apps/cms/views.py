@@ -1,12 +1,12 @@
 from flask import Blueprint, views, g  # 所有模板中都可以访问g对象
 from flask import (render_template, request, session, redirect, url_for)
-from .forms import LoginForm, ResetPwdForm
+from .forms import LoginForm, ResetPwdForm, ResetEmailForm
 from .models import CMSUser
 from .decorators import login_required
 import config
 from exts import db, mail
 from flask_mail import Message  # 导入Message类
-from utils import restful
+from utils import restful, zlcache
 import string
 import random
 # 蓝图 (全局的): 蓝图名字 - __name__ - url前缀
@@ -83,26 +83,23 @@ def email_captcha():
             mail.send(message)
         except Exception as e:
             return restful.server_error()
+        # 4. 存验证码,key=email,value=captcha
+        zlcache.set(email, captcha)
+
         return restful.success()
     else:
         return restful.params_errorr(message='请输入正确的邮箱格式！')
 
 
-'''
-    测试邮箱发送邮件
-'''
+# '''
+#     测试邮箱发送邮件
+# '''
 
-
-@bp.route('/email/')
-def send_email():
-    message = Message('邮件发送', recipients=['1668319858@qq.com'], body='测试')
-    mail.send(message)
-    return '邮件发送成功！'
-
-
-# @bp.route('/front/')
-# def front():
-#     return render_template('cms/cms_front.html')
+# @bp.route('/email/')
+# def send_email():
+#     message = Message('邮件发送', recipients=['1668319858@qq.com'], body='测试')
+#     mail.send(message)
+#     return '邮件发送成功！'
 
 
 # 🌟 类视图:登录类视图
@@ -194,7 +191,15 @@ class ResetEmailView(views.MethodView):
         return render_template('cms/cms_resetemail.html')
 
     def post(self):
-        pass
+        form = ResetEmailForm(request.form)
+        # 1. 验证表单
+        if form.validate():
+            email = form.email.data
+            g.cms_user.email = email
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_errorr(form.get_error())
 
 
 # 将类视图`LoginView`注册到路由规则中,并且命名为login，在url_for反转时，填写login
