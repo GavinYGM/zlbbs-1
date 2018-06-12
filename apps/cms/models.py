@@ -3,6 +3,62 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+# 🌟 权限类
+class CMSPersmission(object):
+    # 255的二进制方式来表示 1111 1111
+    # 0. 所有权限
+    ALL_PERMISSION = 0b11111111
+    # 1. 访问者权限
+    VISITOR = 0b00000001
+    # 2. 管理帖子权限
+    POSTER = 0b00000010
+    # 3. 管理评论的权限
+    COMMENTER = 0b00000100
+    # 4. 管理板块的权限
+    BOARDER = 0b00001000
+    # 5. 管理前台用户的权限
+    FRONTUSER = 0b00010000
+    # 6. 管理后台用户的权限
+    CMSUSER = 0b00100000
+    # 7. 管理后台管理员的权限
+    ADMINER = 0b01000000
+
+
+# 🌟 1. 用户和角色是多对多关系，先定义第三方中间表
+cms_role_user = db.Table(
+    'cms_role_user',
+    db.Column(
+        'cms_role_id',
+        db.Integer,
+        db.ForeignKey('cms_role.id'),
+        primary_key=True),
+    db.Column(
+        'cms_user_id',
+        db.Integer,
+        db.ForeignKey('cms_user.id'),
+        primary_key=True),
+)
+
+
+# 🌟 2. 角色表
+class CMSRole(db.Model):
+    __tablename__ = 'cms_role'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), nullable=False)
+    desc = db.Column(db.String(200), nullable=True)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    permissions = db.Column(
+        db.Integer, default=CMSPersmission.VISITOR)  # 默认是访问者权限
+
+    # 将角色表和中间表绑定
+    # CMSUser：建立关系的表
+    # secodary：中间表
+    # backref：反向引用
+    users = db.relationship(
+        'CMSUser', secondary=cms_role_user, backref='roles')
+
+
+# 🌟 3. 后台用户
 class CMSUser(db.Model):
     __tablename__ = 'cms_user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
