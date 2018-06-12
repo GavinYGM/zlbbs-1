@@ -140,6 +140,7 @@ class LoginView(views.MethodView):
             return self.get(message=message)
 
 
+
 # 🌟 修改密码类视图
 class ResetPwdView(views.MethodView):
     # 在类视图中调用装饰器
@@ -183,7 +184,7 @@ class ResetPwdView(views.MethodView):
             return restful.params_errorr(message=form.get_error())
 
 
-# 🌟 重设邮箱视图类
+# 🌟 重设邮箱类视图
 class ResetEmailView(views.MethodView):
     decorators = [login_required]
 
