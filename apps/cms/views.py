@@ -1,14 +1,15 @@
 from flask import Blueprint, views, g  # 所有模板中都可以访问g对象
 from flask import (render_template, request, session, redirect, url_for)
 from .forms import LoginForm, ResetPwdForm, ResetEmailForm
-from .models import CMSUser
-from .decorators import login_required
+from .models import CMSUser, CMSPersmission
+from .decorators import login_required, permission_required
 import config
 from exts import db, mail
 from flask_mail import Message  # 导入Message类
 from utils import restful, zlcache
 import string
 import random
+
 # 蓝图 (全局的): 蓝图名字 - __name__ - url前缀
 bp = Blueprint("cms", __name__, url_prefix='/cms')
 
@@ -102,6 +103,54 @@ def email_captcha():
 #     return '邮件发送成功！'
 
 
+# 🌟 帖子管理
+@bp.route('/posts/')
+@login_required
+@permission_required(CMSPersmission.POSTER)
+def posts():
+    return render_template('cms/cms_posts.html')
+
+
+# 🌟 评论管理
+@bp.route('/comments')
+@login_required
+@permission_required(CMSPersmission.COMMENTER)
+def comments():
+    return render_template('cms/cms_comments.html')
+
+
+# 🌟 板块管理
+@bp.route('/boards')
+@login_required
+@permission_required(CMSPersmission.BOARDER)
+def boards():
+    return render_template('cms/cms_boards.html')
+
+
+# 🌟 前台用户管理
+@bp.route('/fusers')
+@login_required
+@permission_required(CMSPersmission.FRONTUSER)
+def fusers():
+    return render_template('cms/cms_fusers.html')
+
+
+# 🌟 后台用户管理
+@bp.route('/cusers')
+@login_required
+@permission_required(CMSPersmission.CMSUSER)
+def cusers():
+    return render_template('cms/cms_cusers.html')
+
+
+# 🌟 CMS角色管理
+@bp.route('/croles')
+@login_required
+@permission_required(CMSPersmission.ALL_PERMISSION)
+def croles():
+    return render_template('cms/cms_croles.html')
+
+
 # 🌟 类视图:登录类视图
 class LoginView(views.MethodView):
     def get(self, message=None):
@@ -138,7 +187,6 @@ class LoginView(views.MethodView):
             message = form.errors.popitem()[1][
                 0]  # forms.errors.popitem返回字典的任意一项
             return self.get(message=message)
-
 
 
 # 🌟 修改密码类视图
