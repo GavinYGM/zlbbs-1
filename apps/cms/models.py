@@ -102,6 +102,36 @@ class CMSUser(db.Model):
         result = check_password_hash(self.password, raw_password)
         return result
 
+    # 拿到该用户的所有权限
+    @property
+    def permissions(self):
+        '''
+            user = CMSUser()    # 定义对象
+            print(user.permissions)     # 当作对象.属性的方式访问
+        '''
+        # 1. 判断用户是否拥有角色
+        if not self.roles:
+            return 0  # 0代表不拥有任何权限
+        # 2. 遍历用户权限，用all_permissions存储权限
+        all_permissions = 0
+        for role in self.roles:
+            permissions = role.permissions  # 获取权限
+            all_permissions |= permissions  # 或操作
+        return all_permissions
+
+    # 判断用户有没有权限
+    def has_permission(self, permission):
+        # # 1. 先拿到用户的所有权限
+        # all_permissions = self.permissions
+        # # 2. 将传入的permission和all_permissions进行与运算
+        # result = all_permissions & permission == permission
+        return self.permissions & permission == permission
+
+    @property
+    # 判断是否是开发者
+    def is_developer(self):
+        return self.has_permission(permission=CMSPersmission.ALL_PERMISSION)
+
 
 # 密码：对外的字段名叫做password
 # 密码：对内的字段名叫做_password
