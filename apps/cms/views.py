@@ -19,6 +19,7 @@ bp = Blueprint("cms", __name__, url_prefix='/cms')
 @login_required
 def index():
     return render_template('cms/cms_index.html')
+    # return render_template('cms/index.html')
 
 
 # 🌟 cms后台管理系统的注销
@@ -179,6 +180,7 @@ class LoginView(views.MethodView):
                     session.permanent = True
                 # ⚠️ 这里url_for()进行反转的时候，必须先写：蓝图名.index
                 # 🌟 跳转到cms后台管理首页
+                # return redirect(url_for('cms.index'))
                 return redirect(url_for('cms.index'))
             else:
                 return self.get(message='邮箱或密码错误!')

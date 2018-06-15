@@ -3,10 +3,15 @@ from flask_migrate import Migrate, MigrateCommand  # migrate命令
 from zlbbs import create_app
 from exts import db
 from apps.cms import models as cms_models  # 导入的目的：将所有的模型都映射到数据库中
+from apps.front import models as front_models
 
+# 🌟 CMS后台模型：
 CMSUser = cms_models.CMSUser  # 声明CMSUser模型
 CMSRole = cms_models.CMSRole
 CMSPermission = cms_models.CMSPersmission
+
+# 🌟 Front前台模型：
+FrontUser = front_models.FrontUser
 
 app = create_app()
 
@@ -19,7 +24,7 @@ Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
 
-# 🌟 利用flask-script :新建后台管理用户
+# 🌟 cms后台：利用flask-script :新建后台管理用户
 @manager.option('-u', '--username', dest='username')
 @manager.option('-p', '--password', dest='password')
 @manager.option('-e', '--email', dest='email')
@@ -30,7 +35,7 @@ def create_cms_user(username, password, email):
     print('cms用户添加成功！')
 
 
-# 🌟 创建角色
+# 🌟 cms后台：创建角色
 @manager.command
 def create_role():
     # 1. 访问者
@@ -39,15 +44,15 @@ def create_role():
 
     # 2. 运营角色(修改个人信息，管理帖子，管理评论，管理前台用户)
     operator = CMSRole(name='运营', desc='管理帖子，管理评论，管理前台用户。')
-    operator.permissions = CMSPermission.VISITOR |  \
-        CMSPermission.POSTER | CMSPermission.FRONTUSER | \
-        CMSPermission.COMMENTER | CMSPermission.CMSUSER
+    operator.permissions = CMSPermission.VISITOR | \
+                           CMSPermission.POSTER | CMSPermission.FRONTUSER | \
+                           CMSPermission.COMMENTER | CMSPermission.CMSUSER
 
     # 3. 管理员(拥有绝大部分权限)
     admin = CMSRole(name='管理员', desc='拥有本系统所有权限。')
     admin.permissions = CMSPermission.VISITOR | CMSPermission.POSTER | \
-        CMSPermission.CMSUSER | CMSPermission.COMMENTER | \
-        CMSPermission.FRONTUSER | CMSPermission.BOARDER
+                        CMSPermission.CMSUSER | CMSPermission.COMMENTER | \
+                        CMSPermission.FRONTUSER | CMSPermission.BOARDER
 
     # 4. 开发者(拥有网站所有权限)
     developer = CMSRole(name='开发者', desc='开发人员专用角色。')
@@ -57,6 +62,7 @@ def create_role():
     db.session.commit()
 
 
+# 🌟 cms后台：用户添加到角色中
 @manager.option('-e', '--email', dest='email')
 @manager.option('-n', '--name', dest='name')
 def add_user_to_role(email, name):
@@ -73,6 +79,17 @@ def add_user_to_role(email, name):
             print('用户添加到角色成功！')
         else:
             print('没有这个角色：%s' % name)
+
+
+# 🌟 front前台：添加用户
+@manager.option('-t', '--telephone', dest='telephone')
+@manager.option('-u', '--username', dest='username')
+@manager.option('-p', '--password', dest='password')
+def create_front_user(telephone, username, password):
+    user = FrontUser(username=username, password=password, telephone=telephone)
+    db.session.add(user)
+    db.session.commit()
+    print('front用户添加成功！')
 
 
 # 测试用户是否拥有某种权限
