@@ -17,7 +17,9 @@ class FrontUser(db.Model):
     __tablename__ = 'front_user'
 
     # id不能为自增长，因为存在商业风险，特别是id关联的url
-    id = db.Column(db.String(100), primary_key=True, default=shortuuid.uuid)  # 这里uuid不加()，如果给了就是每次都是把执行结果当作id，而现在的需求是每次执行产生一个
+    id = db.Column(
+        db.String(100), primary_key=True, default=shortuuid.uuid
+    )  # 这里uuid不加()，如果给了就是每次都是把执行结果当作id，而现在的需求是每次执行产生一个
     telephone = db.Column(db.String(11), nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False)
     _password = db.Column(db.String(100), nullable=False)  # 加入_后，变成受保护属性
