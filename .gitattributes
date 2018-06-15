@@ -1,3 +1,13 @@
 /Users/xiaojingyuan/PycharmProjects/zlbbs/static/gentelella-master filter=lfs diff=lfs merge=lfs -text
 /Users/xiaojingyuan/PycharmProjects/zlbbs filter=lfs diff=lfs merge=lfs -text
 /Users/xiaojingyuan/PycharmProjects/zlbbs/* filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/static filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/templates filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/zlbbs.py filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/__pycache__ filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/apps filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/config.py filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/exts.py filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/manage.py filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/migrations filter=lfs diff=lfs merge=lfs -text
+/Users/xiaojingyuan/PycharmProjects/zlbbs/utils filter=lfs diff=lfs merge=lfs -text
