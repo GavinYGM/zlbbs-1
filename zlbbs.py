@@ -5,6 +5,7 @@ from apps.common import bp as common_bp
 import config
 from exts import db, mail
 from flask_wtf import CSRFProtect  # 添加csrf保护模块
+# from utils.captcha import Captcha
 
 
 # 工厂函数：用于注册
@@ -25,6 +26,9 @@ def create_app():
 
     return app
 
+
+# 生成验证码
+# Captcha.gene_graph_captcha()
 
 # config.py / exts.py / models.py / manage.py
 # 前台 、 后台 、 公共部分
