@@ -54,7 +54,7 @@ class Captcha(object):
     @classmethod
     def __gene_random_font(cls):
         fonts = [
-            'Chalkboard.ttc', 'mono.ttf'
+            'Chalkboard.ttc',
         ]
         font = random.choice(fonts)
         return 'utils/captcha/' + font

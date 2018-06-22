@@ -6,6 +6,7 @@ from flask import (
 )
 from utils.captcha import Captcha
 from io import BytesIO
+from exts import alidayu
 
 # 蓝图 : 蓝图名字 - __name__ 前台页面的url后面不需要加前缀
 bp = Blueprint("front", __name__)
@@ -31,7 +32,19 @@ def graph_captcha():
     resp = make_response(out.read())
     # 指定类型
     resp.content_type = 'image/png'
+    # 返回图片
     return resp
+
+'''
+    测试验证码功能
+'''
+# @bp.route('/sms_captcha/')
+# def sms_captcha():
+#     result = alidayu.send_sms(telephone='15927678712', code='我是不语你是胡巴')
+#     if result:
+#         return '发送成功!'
+#     else:
+#         return '发送失败!'
 
 
 # 🌟 Front：注册类视图

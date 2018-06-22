@@ -41,3 +41,9 @@ MAIL_USE_TLS = True  # 如果使用TLS加密协议，使用端口号：587
 MAIL_USERNAME = "291008572@qq.com"  # QQ邮箱
 MAIL_PASSWORD = "brlrqdotgkcicbbh"  # 授权码
 MAIL_DEFAULT_SENDER = "291008572@qq.com"  # 默认发送者
+
+# 🌟 阿里大于[短信验证码服务]相关配置
+ALIDAYU_APP_KEY = '23709557'
+ALIDAYU_APP_SECRET = 'd9e430e0a96e21c92adacb522a905c4b'
+ALIDAYU_SIGN_NAME = '小饭桌应用'
+ALIDAYU_TEMPLATE_CODE = 'SMS_68465012'

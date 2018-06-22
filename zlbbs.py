@@ -3,8 +3,10 @@ from apps.cms import bp as cms_bp
 from apps.front import bp as front_bp
 from apps.common import bp as common_bp
 import config
-from exts import db, mail
+from exts import db, mail, alidayu
 from flask_wtf import CSRFProtect  # 添加csrf保护模块
+
+
 # from utils.captcha import Captcha
 
 
@@ -18,9 +20,10 @@ def create_app():
     app.register_blueprint(front_bp)
     app.register_blueprint(common_bp)
 
-    # 初始化db,mail
+    # 分别用db、mail、alidayu对象初始化app
     db.init_app(app)
     mail.init_app(app)
+    alidayu.init_app(app)
 
     CSRFProtect(app)  # 这样就可以拥有CSRF保护了
 

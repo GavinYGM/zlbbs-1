@@ -6,7 +6,7 @@ $(function () {
     $("#submit").click(function (event) {
         // 1.1 阻止传统(默认)的表单提交方式，走js提交代码的方式
         // 是为了组织按钮默认的提交表单的事件
-        event.preventDefault()
+        event.preventDefault();
 
         // 1.2 获取元素
         var oldpwdE = $("input[name=oldpwd]"); //css选择器：通过input标签获取到name=oldpwd的元素
