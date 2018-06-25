@@ -35,9 +35,19 @@ $(function () {
                 zlalert.alertInfoToast('请输入正确的手机号码！');
                 return;
             }
-            zlajax.get({
+
+            // 获取时间戳
+            var timestammp = (new Date).getTime();
+            // 获取签名
+            var sign = md5(timestammp + telephone + 'qewr234234werjk;adsfkd;sfka');
+            zlajax.post({
                 // 'url': '/c/sms_captcha?telephone=' + telephone,
-                'url': '/c/sms_captcha?telephone=' + telephone,
+                'url': '/c/sms_captcha/',
+                'data': {
+                    'telephone': telephone,
+                    'timestamp': timestammp,
+                    'sign': sign
+                },
                 'success': function (data) {
                     // console.log(data);
                     if (data['code'] == 200) {

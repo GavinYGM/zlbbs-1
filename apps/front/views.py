@@ -17,7 +17,7 @@ def index():
     return 'front index'
 
 
-# 🌟 Front：获取验证码视图
+# 🌟 Front：获取图像验证码视图
 @bp.route('/captcha/')
 def graph_captcha():
     # 获取验证码
