@@ -2,11 +2,12 @@ from flask import (
     Blueprint,
     views,
     render_template,
-    make_response
+    request
 )
-from utils.captcha import Captcha
-from io import BytesIO
-from exts import alidayu
+from .forms import SignupForm
+from utils import restful
+from .models import FrontUser
+from exts import db
 
 # 蓝图 : 蓝图名字 - __name__ 前台页面的url后面不需要加前缀
 bp = Blueprint("front", __name__)
@@ -17,27 +18,11 @@ def index():
     return 'front index'
 
 
-# 🌟 Front：获取图像验证码视图
-@bp.route('/captcha/')
-def graph_captcha():
-    # 获取验证码
-    text, image = Captcha.gene_graph_captcha()
-    # BytesIO:字节流 - out:声明二进制流对象
-    out = BytesIO()
-    # 将图片保存到image对象，指定图片格式png
-    image.save(out, 'png')
-    # 将指针指定在0位置
-    out.seek(0)
-    # 读取并返回
-    resp = make_response(out.read())
-    # 指定类型
-    resp.content_type = 'image/png'
-    # 返回图片
-    return resp
-
 '''
     测试验证码功能
 '''
+
+
 # @bp.route('/sms_captcha/')
 # def sms_captcha():
 #     result = alidayu.send_sms(telephone='15927678712', code='我是不语你是胡巴')
@@ -52,6 +37,25 @@ class SignupView(views.MethodView):
     def get(self):
         return render_template('front/front_signup.html')
         # return render_template('front/login.html')
+
+    # 注册流程
+    def post(self):
+        form = SignupForm(request.form)
+        # 通过验证
+        if form.validate():
+            telephone = form.telephone.data
+            username = form.username.data
+            password = form.password1.data
+            user = FrontUser(telephone=telephone, username=username, password=password)
+            db.session.add(user)
+            db.session.commit()
+            return restful.success()
+        # 未通过验证
+        else:
+            # 打印错误
+            print('未通过验证，错误信息：', form.get_error())
+            # 返回错误信息
+            return restful.params_error(message=form.get_error())
 
 
 bp.add_url_rule('/signup/', view_func=SignupView.as_view('signup'))

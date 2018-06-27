@@ -85,3 +85,59 @@ $(function () {
         }
     )
 });
+
+$(function () {
+    $('#submit-btn').click(function () {
+        // 0. 阻止默认事件，如果不阻止，点击button按钮，会自动将表单提交
+        event.preventDefault();
+
+        // 1. 获取输入框各种标签
+        // 手机号码
+        var telephone_input = $("input[name='telephone']");
+        // 短信验证码
+        var sms_captcha_input = $("input[name='sms_captcha']");
+        //用户名
+        var username_input = $("input[name='username']");
+        //密码
+        var password1_input = $("input[name='password1']");
+        //确认密码
+        var password2_input = $("input[name='password2']");
+        //图形验证码
+        var graph_captcha_input = $("input[name='graph_captcha']");
+
+        // 2. 获取各输入框的值
+        var telephone = telephone_input.val();
+        var sms_captcha = sms_captcha_input.val();
+        var username = username_input.val();
+        var password1 = password1_input.val();
+        var password2 = password2_input.val();
+        var graph_captcha = graph_captcha_input.val();
+
+        // ajax请求
+        zlajax.post({
+            'url': '/signup/',
+            'data': {
+                'telephone': telephone,
+                'sms_captcha': sms_captcha,
+                'username': username,
+                'password1': password1,
+                'password2': password2,
+                'graph_captcha': graph_captcha
+            },
+            // 请求成功200的时候
+            'success': function (data) {
+                if (data['code'] == 200) {
+                    // 跳转到首页
+                    window.location = '/'
+                } else {
+                    // zlalert.alertInfo(data['message']);
+                    zlalert.alertInfo('注册失败！')
+                }
+            },
+            // 404 500等错误
+            'fail': function () {
+                zlalert.alertNetworkError();
+            }
+        })
+    })
+});

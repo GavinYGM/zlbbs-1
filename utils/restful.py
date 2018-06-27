@@ -16,7 +16,13 @@ def restful_result(code, message, data):
     :param message: 返回错误信息
     :param data: 返回数据
     '''
-    return jsonify({'code': code, 'message': message, 'data': data or {}})
+    return jsonify(
+        {
+            'code': code,
+            'message': message,
+            'data': data or {}
+        }
+    )
 
 
 def success(message=None, data=None):
@@ -36,11 +42,10 @@ def unauth_error(message=''):
     :param message: 返回错误信息
     :param data: 返回数据
     '''
-    return restful_result(
-        code=HttpCode.unautherror, message=message, data=None)
+    return restful_result(code=HttpCode.unautherror, message=message, data=None)
 
 
-def params_errorr(message=''):
+def params_error(message=''):
     '''
     参数错误 400
     :param code: 状态码
@@ -57,5 +62,4 @@ def server_error(message=''):
     :param message: 返回错误信息
     :param data: 返回数据
     '''
-    return restful_result(
-        code=HttpCode.servererror, message=message or '服务器内部错误', data=None)
+    return restful_result(code=HttpCode.servererror, message=message or '服务器内部错误', data=None)

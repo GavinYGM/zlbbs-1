@@ -7,7 +7,7 @@ import memcache
 cache = memcache.Client(['118.25.48.34:11211'], debug=True)
 
 
-# 设置
+# 设置: 过期时间60秒
 def set(key, value, timeout=60):
     '''
     设置键值对

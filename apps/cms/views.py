@@ -55,7 +55,7 @@ def email_captcha():
         # 1. 查询字符串
         email = request.args.get('email')
         if not email:
-            return restful.params_errorr('请传递邮箱参数！')
+            return restful.params_error('请传递邮箱参数！')
 
         # 2. 产生验证码
         # 2.1 a-zA-Z的字符串
@@ -90,7 +90,7 @@ def email_captcha():
 
         return restful.success()
     else:
-        return restful.params_errorr(message='请输入正确的邮箱格式！')
+        return restful.params_error(message='请输入正确的邮箱格式！')
 
 
 # '''
@@ -226,12 +226,12 @@ class ResetPwdView(views.MethodView):
                 return restful.success()
             else:
                 # return jsonify({'code': 400, 'message': '旧密码错误！'})
-                return restful.params_errorr(message='旧密码错误！')
+                return restful.params_error(message='旧密码错误！')
         else:
             # 获取错误信息
             # message = form.get_error()
             # return message
-            return restful.params_errorr(message=form.get_error())
+            return restful.params_error(message=form.get_error())
 
 
 # 🌟 重设邮箱类视图
@@ -250,7 +250,7 @@ class ResetEmailView(views.MethodView):
             db.session.commit()
             return restful.success()
         else:
-            return restful.params_errorr(form.get_error())
+            return restful.params_error(form.get_error())
 
 
 # 将类视图`LoginView`注册到路由规则中,并且命名为login，在url_for反转时，填写login
