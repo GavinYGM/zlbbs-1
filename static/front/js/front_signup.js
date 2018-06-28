@@ -1,4 +1,4 @@
-// 图片验证码
+// 🌟 获取图片验证码
 $(function () {
     $('#captcha-img').click(function () {
         // 1. 将js原生对象转换成jquery对象
@@ -17,7 +17,7 @@ $(function () {
     });
 });
 
-// 短信验证码
+// 🌟 获取短信验证码
 $(function () {
     $('#sms-captcha-btn').click(function (event) {
             // 1. 在表单中，如果有一个button按钮，他的默认行为是：
@@ -86,6 +86,7 @@ $(function () {
     )
 });
 
+// 🌟 注册提交表单ajax请求
 $(function () {
     $('#submit-btn').click(function () {
         // 0. 阻止默认事件，如果不阻止，点击button按钮，会自动将表单提交
@@ -127,11 +128,17 @@ $(function () {
             // 请求成功200的时候
             'success': function (data) {
                 if (data['code'] == 200) {
-                    // 跳转到首页
-                    window.location = '/'
+                    // 1. 返回成功注册之后，记录查询return_to的文本内容
+                    var return_to = $('#return-to-span').text();
+                    if (return_to) {
+                        window.location = return_to
+                    } else {
+                        // 2. 跳转到首页
+                        window.location = '/'
+                    }
                 } else {
-                    // zlalert.alertInfo(data['message']);
-                    zlalert.alertInfo('注册失败！')
+                    zlalert.alertInfo(data['message']);
+                    // zlalert.alertInfo('注册失败！')
                 }
             },
             // 404 500等错误

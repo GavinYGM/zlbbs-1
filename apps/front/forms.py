@@ -17,22 +17,28 @@ class SignupForm(BaseForm):
         sms_captcha = field.data  # 拿到短信验证码的值
         telephone = self.telephone.data  # 拿到手机号的值
 
-        # 从memcached中取telephone
-        sms_captcha_mem = zlcache.get(telephone)
-
-        # 如果没有填写短信验证码或者是不相等
-
-        print('sms_captcha_mem = ', sms_captcha_mem)
-        print('sms_captcha = ', sms_captcha)
-
-        if not sms_captcha_mem or sms_captcha_mem.lower() != sms_captcha.lower():
-            raise ValidationError(message='短信验证码错误！')
+        # TODO 测试用
+        '''
+            判断短信验证码是否不等于1111，如果不等于，再去做验证
+        '''
+        if sms_captcha != '1111':
+            print('短信验证码不等于1111')
+            # 从memcached中取telephone
+            sms_captcha_mem = zlcache.get(telephone)
+            # 如果没有填写短信验证码或者是不相等
+            # print('sms_captcha_mem = ', sms_captcha_mem)
+            # print('sms_captcha = ', sms_captcha)
+            if not sms_captcha_mem or sms_captcha_mem.lower() != sms_captcha.lower():
+                raise ValidationError(message='短信验证码错误！')
 
     # 图形验证码
     def validate_graph_captcha(self, field):
         graph_captcha = field.data
 
-        # 从memcached中取graph_captcha
-        graph_captcha_mem = zlcache.get(graph_captcha.lower())
-        if not graph_captcha_mem:
-            raise ValidationError(message='图形验证码错误！')
+        # TODO 测试用
+        if graph_captcha != '1111':
+            print('图形验证码不等于1111')
+            # 从memcached中取graph_captcha
+            graph_captcha_mem = zlcache.get(graph_captcha.lower())
+            if not graph_captcha_mem:
+                raise ValidationError(message='图形验证码错误！')
