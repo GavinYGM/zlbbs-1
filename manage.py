@@ -4,6 +4,7 @@ from zlbbs import create_app
 from exts import db
 from apps.cms import models as cms_models  # 导入的目的：将所有的模型都映射到数据库中
 from apps.front import models as front_models
+from apps.models import BannerModel
 
 # 🌟 CMS后台模型：
 CMSUser = cms_models.CMSUser  # 声明CMSUser模型

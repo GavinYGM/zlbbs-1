@@ -65,7 +65,7 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>后台管理</span></a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -92,7 +92,7 @@
                         <ul class="nav side-menu">
                             <li><a><i class="fa fa-home"></i> 首页 <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="index.html">Dashboard</a></li>
+                                    <li><a href="#">Dashboard</a></li>
                                     {#                                    <li><a href="index2.html">Dashboard2</a></li>#}
                                     {#                                    <li><a href="index3.html">Dashboard3</a></li>#}
                                 </ul>
@@ -112,6 +112,8 @@
                             </li>
 
                             {% set cms_user = g.cms_user %}
+                            <li><a href="{{ url_for('cms.banners') }}"><i class="fa fa-desktop"></i> 轮播图管理 <span class="fa fa-chevron-down"></span></a></li>
+
                             {% if cms_user.has_permission(CMSPermission.POSTER) %}
                                 <li><a href="{{ url_for('cms.posts') }}"><i class="fa fa-desktop"></i> 帖子管理 <span class="fa fa-chevron-down"></span></a>
                                 </li>

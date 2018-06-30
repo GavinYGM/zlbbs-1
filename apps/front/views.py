@@ -2,12 +2,14 @@ from flask import (
     Blueprint,
     views,
     render_template,
-    request
-)
-from .forms import SignupForm
+    request,
+    session,
+    url_for)
+from .forms import SignupForm, SigninForm
 from utils import restful, safeutils
 from .models import FrontUser
 from exts import db
+import config
 
 # 蓝图 : 蓝图名字 - __name__ 前台页面的url后面不需要加前缀
 bp = Blueprint("front", __name__)
@@ -17,11 +19,6 @@ bp = Blueprint("front", __name__)
 def index():
     # return 'front index'
     return render_template('front/front_index.html')
-
-
-@bp.route('/test/')
-def front_test():
-    return render_template('front/front_test.html')
 
 
 '''
@@ -47,9 +44,10 @@ class SignupView(views.MethodView):
         # return_to 存在 并且不等于当前页面的url 并且
         if return_to and return_to != request.url and safeutils.is_safe_url(return_to):
             return render_template('front/front_signup.html', return_to=return_to)
+            # return render_template('front/login.html',return_to=return_to)
         else:
             return render_template('front/front_signup.html')
-        # return render_template('front/login.html')
+            # return render_template('front/login.html')
 
     # 注册流程
     def post(self):
@@ -83,4 +81,34 @@ class SignupView(views.MethodView):
             return restful.params_error(message=error_info)
 
 
+class SigninView(views.MethodView):
+    def get(self):
+        return_to = request.referrer
+        # 如果return_to 存在 && 不等于当前的url && 不等于注册页面的url && 安全
+        if return_to and return_to != request.url and return_to != url_for('front.signup') and safeutils.is_safe_url(return_to):
+            return render_template('front/front_signin.html', return_to=return_to)
+        else:
+            return render_template('front/front_signin.html')
+
+    def post(self):
+        form = SigninForm(request.form)
+        if form.validate():
+            telephone = form.telephone.data
+            password = form.password.data
+            remember = form.remember.data
+            user = FrontUser.query.filter_by(telephone=telephone).first()
+            # 如果用户存在，并且密码验证通过
+            if user and user.check_password(password):
+                # 存储session信息
+                session[config.FRONT_USER_ID] = user.id
+                if remember:
+                    session.permanent = True  # 31天cookie
+                    return restful.success()
+            else:
+                return restful.params_error(message='手机号码或密码错误')
+        else:
+            return restful.params_error(message=form.get_error())
+
+
 bp.add_url_rule('/signup/', view_func=SignupView.as_view('signup'))
+bp.add_url_rule('/signin/', view_func=SigninView.as_view('signin'))

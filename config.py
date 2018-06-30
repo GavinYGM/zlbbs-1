@@ -1,7 +1,8 @@
 import os
 
-# 指定secret_key
-SECRET_KEY = os.urandom(24)
+# 指定secret_key:用于解析session数据
+# SECRET_KEY = os.urandom(24)
+SECRET_KEY = 'asdfjqip1i3p4ksnfjdfal'
 
 DEBUG = True
 
@@ -29,6 +30,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # 定义一个常量:用来存cms模块的用户id
 CMS_USER_ID = 'ASDFSDFASD'
+
+# 定义一个常量：用来存front模块得意哦那个户id
+FRONT_USER_ID = 'ASDGHSJKGDAHKJSGHDK'
 
 # flask-email
 # 🌟 发送者邮箱的服务器地址

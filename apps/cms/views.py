@@ -1,7 +1,18 @@
 from flask import Blueprint, views, g  # 所有模板中都可以访问g对象
-from flask import (render_template, request, session, redirect, url_for)
-from .forms import LoginForm, ResetPwdForm, ResetEmailForm
+from flask import (
+    render_template,
+    request,
+    session,
+    redirect,
+    url_for
+)
+from .forms import (
+    LoginForm,
+    ResetPwdForm,
+    ResetEmailForm,
+    AddBannerForm)
 from .models import CMSUser, CMSPersmission
+from ..models import BannerModel
 from .decorators import login_required, permission_required
 import config
 from exts import db, mail
@@ -150,6 +161,31 @@ def cusers():
 @permission_required(CMSPersmission.ALL_PERMISSION)
 def croles():
     return render_template('cms/cms_croles.html')
+
+
+# 🌟 CMS轮播图管理
+@bp.route('/banners/')
+@login_required
+def banners():
+    return render_template('cms/cms_banners.html')
+
+
+@bp.route('/abanner/', methods=['POST'])
+@login_required
+def abanner():
+    form = AddBannerForm(request.form)
+    # 通过验证
+    if form.validate():
+        name = form.name.data
+        image_url = form.image_url.data
+        link_url = form.link_url.data
+        priority = form.priority.data
+        banner = BannerModel(name=name, image_url=image_url, link_url=link_url, priority=priority)
+        db.session.add(banner)
+        db.session.commit()
+        return restful.success()
+    else:
+        return restful.params_error(message=form.get_error())
 
 
 # 🌟 类视图:登录类视图
