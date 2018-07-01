@@ -5,7 +5,7 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 
 body {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
     overflow: hidden;
 }
 
@@ -61,21 +61,21 @@ body {
     margin-right: -20px;
 }
 
-.nav-sidebar>li {
+.nav-sidebar > li {
     background: #494f60;
     border-bottom: 1px solid #363a47;
     border-top: 1px solid #666;
     line-height: 35px;
 }
 
-.nav-sidebar>li>a {
+.nav-sidebar > li > a {
     background: #494f60;
     color: #9b9fb1;
     margin-left: 25px;
     display: block;
 }
 
-.nav-sidebar>li a span {
+.nav-sidebar > li a span {
     float: right;
     width: 10px;
     height: 10px;
@@ -88,29 +88,29 @@ body {
     margin-right: 10px;
 }
 
-.nav-sidebar>li>a:hover {
+.nav-sidebar > li > a:hover {
     color: #fff;
     background: #494f60;
     text-decoration: none;
 }
 
-.nav-sidebar>li>.subnav {
+.nav-sidebar > li > .subnav {
     display: none;
 }
 
-.nav-sidebar>li.unfold {
+.nav-sidebar > li.unfold {
     background: #494f60;
 }
 
-.nav-sidebar>li.unfold>.subnav {
+.nav-sidebar > li.unfold > .subnav {
     display: block;
 }
 
-.nav-sidebar>li.unfold>a {
+.nav-sidebar > li.unfold > a {
     color: #db4055;
 }
 
-.nav-sidebar>li.unfold>a span {
+.nav-sidebar > li.unfold > a span {
     transform: rotate(135deg);
     top: 5px;
     border-color: #db4055 #db4055 transparent transparent;
@@ -200,4 +200,10 @@ body {
 
 .form-container {
     width: 300px;
+}
+
+.top-box {
+    overflow: hidden;
+    background: #ecedf0;
+    padding: 10px;
 }

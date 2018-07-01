@@ -30,7 +30,7 @@ $(function () {
                 }
             },
             'fail': function () {
-
+                console.log(data);
             }
         })
     })

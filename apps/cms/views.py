@@ -10,7 +10,9 @@ from .forms import (
     LoginForm,
     ResetPwdForm,
     ResetEmailForm,
-    AddBannerForm)
+    AddBannerForm,
+    UpdateBannerForm
+)
 from .models import CMSUser, CMSPersmission
 from ..models import BannerModel
 from .decorators import login_required, permission_required
@@ -167,9 +169,12 @@ def croles():
 @bp.route('/banners/')
 @login_required
 def banners():
-    return render_template('cms/cms_banners.html')
+    # 从数据库中：查找所有的banner
+    banners = BannerModel.query.all()
+    return render_template('cms/cms_banners.html', banners=banners)
 
 
+# 🌟 CMS添加轮播图
 @bp.route('/abanner/', methods=['POST'])
 @login_required
 def abanner():
@@ -186,6 +191,55 @@ def abanner():
         return restful.success()
     else:
         return restful.params_error(message=form.get_error())
+
+
+# 🌟 CMS编辑(更新)轮播图
+@bp.route('/ubanner/', methods=['POST'])
+@login_required
+def ubanner():
+    # 1. 验证器
+    form = UpdateBannerForm(request.form)
+    if form.validate():
+        banner_id = form.banner_id.data
+        name = form.name.data
+        image_url = form.image_url.data
+        link_url = form.link_url.data
+        priority = form.priority.data
+
+        # 2. 获取banner_id的banner
+        banner = BannerModel.query.get(banner_id)
+        if banner:
+            banner.name = name
+            banner.image_url = image_url
+            banner.link_url = link_url
+            banner.priority = priority
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_error(message='没有这个轮播图！')
+    else:
+        return restful.params_error(message=form.get_error())
+
+
+# 🌟 CMS删除轮播图
+@bp.route('/dbanner/', methods=['POST'])
+@login_required
+def dbanner():
+    # 1. 获取传过来的banner_id
+    banner_id = request.form.get('banner_id')
+
+    # 2. 如果没有banner_id
+    if not banner_id:
+        return restful.params_error(message='请输入轮播图id！')
+
+    # 3. 根据传过来的banner_id没有找到banner信息
+    banner = BannerModel.query.get(banner_id)
+    if not banner:
+        return restful.params_error(message='没有这个轮播图！')
+
+    db.session.delete(banner)
+    db.session.commit()
+    return restful.success()
 
 
 # 🌟 类视图:登录类视图
@@ -222,8 +276,7 @@ class LoginView(views.MethodView):
                 return self.get(message='邮箱或密码错误!')
         else:
             # 返回 ('password',['请输入正确格式的密码']) [1][0]
-            message = form.errors.popitem()[1][
-                0]  # forms.errors.popitem返回字典的任意一项
+            message = form.errors.popitem()[1][0]  # forms.errors.popitem返回字典的任意一项
             return self.get(message=message)
 
 
